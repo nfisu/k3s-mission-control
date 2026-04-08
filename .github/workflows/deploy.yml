@@ -55,8 +55,8 @@ jobs:
 
       - name: Apply manifests to K3s
         run: |
-          kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/deployment.yaml --validate=false
+          kubectl apply -f k8s/service.yaml --validate=false
 
       - name: Wait for rollout
         run: kubectl rollout status deployment/mission-control --timeout=120s

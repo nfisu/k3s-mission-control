@@ -44,7 +44,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$HOME/.kube"
-          printf '%s' "${{ secrets.KUBECONFIG_DATA_B64 }}" | base64 -d > "$HOME/.kube/config"
+          cat <<'EOF' > "$HOME/.kube/config"
+          ${{ secrets.KUBECONFIG_DATA }}
+          EOF
           chmod 600 "$HOME/.kube/config"
           test -s "$HOME/.kube/config"
 

@@ -1,33 +1,3 @@
-name: Build and Deploy to K3s
-
-on:
-  push:
-    branches:
-      - main
-
-env:
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/k3s-mission-control
-
-jobs:
-  build-and-push:
-    name: Build Docker Image
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - run: |
-          docker build -t $IMAGE_NAME:latest .
-          docker tag $IMAGE_NAME:latest $IMAGE_NAME:${{ github.sha }}
-
-      - run: |
-          docker push $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:${{ github.sha }}
-
   deploy:
     name: Deploy to K3s
     runs-on: ubuntu-latest
@@ -43,20 +13,33 @@ jobs:
           echo "${{ secrets.KUBECONFIG_DATA_B64 }}" | base64 -d > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
 
+      - name: Verify cluster access
+        env:
+          KUBECONFIG: /home/runner/.kube/config
+        run: |
+          kubectl config current-context
+          kubectl get nodes
+
       - name: Update image tag
         run: |
           sed -i "s|nfisu/k3s-mission-control:latest|$IMAGE_NAME:${{ github.sha }}|g" k8s/deployment.yaml
 
       - name: Apply manifests
+        env:
+          KUBECONFIG: /home/runner/.kube/config
         run: |
           kubectl apply -f k8s/configmap.yaml --validate=false
           kubectl apply -f k8s/deployment.yaml --validate=false
           kubectl apply -f k8s/service.yaml --validate=false
 
       - name: Wait for rollout
+        env:
+          KUBECONFIG: /home/runner/.kube/config
         run: kubectl rollout status deployment/mission-control --timeout=120s
 
       - name: Show state
+        env:
+          KUBECONFIG: /home/runner/.kube/config
         run: |
           kubectl get pods
           kubectl get service

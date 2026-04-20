@@ -72,6 +72,7 @@ jobs:
         run: |
           set -euo pipefail
           kubectl apply -f k8s/configmap.yaml --validate=false
+          kubectl apply -f k8s/secret.yaml --validate=false
           kubectl apply -f k8s/deployment.yaml --validate=false
           kubectl apply -f k8s/service.yaml --validate=false
 

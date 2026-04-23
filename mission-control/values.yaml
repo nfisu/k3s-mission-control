@@ -27,7 +27,7 @@ service:
 config:
   appName: "K3s Mission Control"
   appEnv: "production"
-  version: "v4"
+  version: "v5-broken"
   port: "3000"
 
 secrets:

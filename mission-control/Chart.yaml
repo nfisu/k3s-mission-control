@@ -2,8 +2,8 @@ apiVersion: v2
 name: mission-control
 description: K3s Mission Control dashboard — a Kubernetes-deployed Node.js app
 type: application
-version: 1.2.0
-appVersion: "5.0.0"
+version: 1.2.1
+appVersion: "5.1.0"
 keywords:
   - nodejs
   - kubernetes

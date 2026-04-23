@@ -1,0 +1,13 @@
+apiVersion: v2
+name: mission-control
+description: K3s Mission Control dashboard — a Kubernetes-deployed Node.js app
+type: application
+version: 1.0.0
+appVersion: "3.0.0"
+keywords:
+  - nodejs
+  - kubernetes
+  - dashboard
+maintainers:
+  - name:  nfisu
+    email: isunneka@gmail.com
